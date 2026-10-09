@@ -202,84 +202,84 @@ var DIMS = ['权力欲','理性度','孤独感','变革性','情感深度'];
 // 维度顺序: [权力欲, 理性度, 孤独感, 变革性, 情感深度]
 var FIGURES = [
   {name:'李白',title:'浪漫诗仙',tagline:'醉眼看人间，诗剑舞天涯',
-   vec:[-2,-2,1,1,2],color:'#4a6fa5',accentName:'靛蓝',
+   vec:[-2,-1,1,0,2],color:'#4a6fa5',accentName:'靛蓝',
    timeline:[
      {event:'少年出蜀',text:'仗剑去国，辞亲远游，一叶扁舟沿长江而下。从此天下有了李太白。'},
      {event:'长安醉卧',text:'天子呼来不上船，自称臣是酒中仙。贺知章见他，惊呼"谪仙人"。'},
      {event:'轻舟已过',text:'流放夜郎途中遇赦。他写下"轻舟已过万重山"——那个出蜀少年终于回来了。'}
    ]},
   {name:'武则天',title:'千古女帝',tagline:'日月凌空，万物臣服',
-   vec:[2,2,2,2,-1],color:'#a02040',accentName:'深红',
+   vec:[2,1,2,2,-1],color:'#a02040',accentName:'深红',
    timeline:[
      {event:'入宫为才人',text:'十四岁入太宗后宫，被赐号"武媚"。驯狮子骢的故事里，已见帝王心性。'},
      {event:'改唐为周',text:'六十七岁称帝，改国号为周。以一介女身坐上龙椅，前无古人。'},
      {event:'无字之碑',text:'临终去帝号，以皇后身份入葬乾陵。立无字碑，功过留给后人评说。'}
    ]},
   {name:'达芬奇',title:'全能天才',tagline:'万物皆可解，唯有好奇不息',
-   vec:[0,2,1,1,1],color:'#c8983e',accentName:'琥珀',
+   vec:[0,2,1,2,0],color:'#c8983e',accentName:'琥珀',
    timeline:[
      {event:'画室学艺',text:'少年入韦罗基奥画室。他画的天使比师父还好，师父从此搁笔。'},
      {event:'米兰十七年',text:'给米兰公爵写信求职——"我能造桥、造炮、造城防"。在米兰画下《最后的晚餐》。'},
      {event:'手稿如海',text:'留下六千页手稿，从飞行器到人体解剖，每一个领域都走到了人类智力的尽头。'}
    ]},
   {name:'苏格拉底',title:'诘问哲人',tagline:'唯有审视过的人生值得过',
-   vec:[-1,2,1,1,0],color:'#d4af37',accentName:'金色',
+   vec:[-1,2,0,0,1],color:'#d4af37',accentName:'金色',
    timeline:[
      {event:'德尔斐神谕',text:'神说他是雅典最聪明的人。他困惑，于是开始一一走访"智者"，发现他们自以为知。'},
      {event:'街头诘问',text:'在雅典街头追问每一个行人，用不断追问击碎所有人的虚假认知。'},
      {event:'饮鸩而死',text:'被判"腐蚀青年"之罪。拒绝逃跑，平静饮下毒堇汁，用死亡完成了最后一课。'}
    ]},
   {name:'尼采',title:'超人先知',tagline:'那些没杀死我的，使我更强',
-   vec:[1,2,2,2,2],color:'#7a3a8a',accentName:'深紫',
+   vec:[1,1,2,2,2],color:'#7a3a8a',accentName:'深紫',
    timeline:[
      {event:'墓园少年',text:'父亲早逝，少年在墓园和音乐中度过。十岁开始写诗，内心已有一个深渊。'},
      {event:'都灵崩溃',text:'在都灵街头看到马被鞭打，抱住马痛哭。从此精神崩溃，余生十一年在黑暗中度过。'},
      {event:'超人宣言',text:'写下"上帝已死"与超人哲学。生前无人理解，死后照亮了整个二十世纪。'}
    ]},
   {name:'克利奥帕特拉',title:'尼罗河蛇后',tagline:'以美为刃，以智为盾',
-   vec:[2,1,1,1,2],color:'#b8860b',accentName:'金红',
+   vec:[2,1,0,1,2],color:'#b8860b',accentName:'金红',
    timeline:[
      {event:'卷毯见凯撒',text:'被弟弟逐出埃及，她把自己卷在地毯里送到凯撒面前——一场赌命的自我推销。'},
      {event:'与安东尼',text:'凯撒死后她选择了安东尼。两人的联盟几乎重塑了整个地中海的版图。'},
      {event:'毒蛇之吻',text:'亚克兴海战败后，她选择用毒蛇结束自己。埃及从此成为罗马的一个行省。'}
    ]},
   {name:'成吉思汗',title:'草原之王',tagline:'最大的快乐，在于征服敌人',
-   vec:[2,1,-1,1,-2],color:'#3a6a4a',accentName:'暗绿',
+   vec:[2,0,-1,1,-2],color:'#3a6a4a',accentName:'暗绿',
    timeline:[
      {event:'少年劫难',text:'父亲被毒死，部落抛弃了孤儿寡母。少年在草原上挖草根活下来，学到只有强者才能生存。'},
      {event:'统一蒙古',text:'用二十年时间，将散落的草原部落一一收入麾下，被推为"成吉思汗"。'},
      {event:'西征花剌子模',text:'使者被杀，他率军西征，一路摧毁城池。蒙古铁骑踏出了横跨欧亚的帝国。'}
    ]},
   {name:'曹操',title:'乱世枭雄',tagline:'宁我负人，毋人负我',
-   vec:[2,2,1,1,0],color:'#8b7515',accentName:'暗金',
+   vec:[2,2,0,0,-1],color:'#8b7515',accentName:'暗金',
    timeline:[
      {event:'刺董未遂',text:'年轻时任侠放荡，曾持刀刺董卓，失败后逃亡。刺杀虽败，但天下皆知此名。'},
      {event:'挟天子令诸侯',text:'迎汉献帝于许昌，"奉天子以令不臣"，从此以中央之名行霸主之实。'},
      {event:'赤壁之败',text:'南下统一，却在赤壁遇周瑜一把火。统一大业功亏一篑，但北方基业已稳。'}
    ]},
   {name:'诸葛亮',title:'卧龙先生',tagline:'鞠躬尽瘁，死而后已',
-   vec:[1,2,2,-1,1],color:'#3a8068',accentName:'翠青',
+   vec:[0,2,2,0,1],color:'#3a8068',accentName:'翠青',
    timeline:[
      {event:'躬耕南阳',text:'隐居隆中，自比管仲乐毅。种田读书观天下，等一个值得出山的人。'},
      {event:'隆中对策',text:'刘备三顾茅庐，他一张地图三分天下。从布衣到帝师，只因遇对了人。'},
      {event:'星落五丈原',text:'六出祁山北伐，最终病逝五丈原。鞠躬尽瘁死而后已，兑现了白帝城的承诺。'}
    ]},
   {name:'拿破仑',title:'科西嘉之鹰',tagline:'我命由我，不由天',
-   vec:[2,2,1,2,1],color:'#2b4a8a',accentName:'深蓝金',
+   vec:[2,0,0,2,1],color:'#2b4a8a',accentName:'深蓝金',
    timeline:[
      {event:'土伦初战',text:'二十四岁，在土伦港一战成名。炮兵上尉一战升为准将，科西嘉穷小子登上历史舞台。'},
      {event:'加冕称帝',text:'从教皇手中夺过皇冠，自己戴在头上。法兰西皇帝不是神授，是自取。'},
      {event:'滑铁卢',text:'百日王朝最后一天，滑铁卢的炮火终结了一切。被流放圣赫勒拿，在孤岛上写完回忆录。'}
    ]},
   {name:'凯撒',title:'永恒之名',tagline:'我来，我见，我征服',
-   vec:[2,1,-1,2,1],color:'#7a4a8b',accentName:'紫金',
+   vec:[2,1,-1,1,0],color:'#7a4a8b',accentName:'紫金',
    timeline:[
      {event:'海盗之约',text:'年轻时被海盗绑架，他笑着说"你们要的赎金太少了，将来我要处死你们"。他做到了。'},
      {event:'越过卢比孔河',text:'"骰子已掷出"，带兵渡河，罗马内战爆发。他破了罗马最古老的禁忌。'},
      {event:'元老院之死',text:'被布鲁图斯等人刺杀于元老院。身中二十三刀，倒在庞培雕像脚下。他的名字成了"皇帝"的代名词。'}
    ]},
   {name:'圣女贞德',title:'烈焰圣女',tagline:'上帝之声指引我的剑',
-   vec:[0,-2,2,2,2],color:'#a04050',accentName:'银白红',
+   vec:[-1,-2,2,2,2],color:'#a04050',accentName:'银白红',
    timeline:[
      {event:'听见声音',text:'十三岁的农家少女，在田野里听到"圣人的声音"，告诉她要去拯救法兰西。'},
      {event:'解围奥尔良',text:'剪短发、穿甲胄，率军解奥尔良之围。十七岁少女扭转了百年战争的局势。'},
@@ -312,7 +312,7 @@ var QUESTIONS = [
    ]},
   {icon:'⚖️',intro:'你面前摆着一卷传了三百年的律法，族中长老说"祖制不可变"。但你知道其中三条已经不合时宜——',
    options:[
-     {text:'直接撕掉那三条。改革的代价总得有人来付，你来做这个恶人',scores:[2,-1,0,2,0]},
+     {text:'直接撕掉那三条。改革的代价总得有人来付，你来做这个恶人',scores:[2,-1,1,2,0]},
      {text:'逐条列出改革利弊写成谏书，用道理说服所有人——刀不如笔',scores:[0,2,0,1,0]},
      {text:'你对律法本身没兴趣，但"打破旧物"这件事让你兴奋',scores:[0,0,0,2,1]},
      {text:'保留旧法外壳，在缝隙中填入新内容——温水煮青蛙最高明',scores:[1,2,0,-1,0]}
@@ -355,7 +355,7 @@ var QUESTIONS = [
   {icon:'🔱',intro:'一位先知告诉你"你的名字会被记住一千年"。你的反应是——',
    options:[
      {text:'本该如此。你的每一步都在为此铺路',scores:[2,1,0,0,0]},
-     {text:'名字不重要，重要的是你做的事是否改变了什么',scores:[0,0,0,1,1]},
+     {text:'名字不重要，重要的是你做的事是否改变了什么',scores:[0,0,1,1,1]},
      {text:'一千年太久，你只在乎今夜月色和杯中酒',scores:[-1,0,0,0,2]},
      {text:'你不信预言——命运在你手中，不在任何人的嘴里',scores:[1,1,0,2,0]}
    ]},
@@ -376,7 +376,7 @@ var QUESTIONS = [
   {icon:'📖',intro:'如果人生只能选一种追求，你会选——',
    options:[
      {text:'穷尽世间一切学问，没有一个问题是你不愿追问的',scores:[0,2,0,1,0]},
-     {text:'走遍天下，见所有人，打所有仗——阅历就是你的书',scores:[2,0,0,0,1]},
+     {text:'走遍天下，见所有人，打所有仗——阅历就是你的书',scores:[2,0,1,0,1]},
      {text:'写出一句让千年后的人仍会落泪的话',scores:[0,0,0,1,2]},
      {text:'建立一套全新的秩序，让所有后来者都活在你的规则里',scores:[2,0,0,2,0]}
    ]},
@@ -524,9 +524,19 @@ function cosineSim(a,b){
 }
 
 function computeResult(){
+  // 找用户得分最高的两个维度
+  var sorted=userVec.map(function(v,i){return{v:v,i:i}}).sort(function(a,b){return b.v-a.v});
+  var top2=[sorted[0].i,sorted[1].i];
   var best=-1,bestIdx=0;
   for(var i=0;i<FIGURES.length;i++){
     var s=cosineSim(userVec,FIGURES[i].vec);
+    // 主维度 bonus：用户 top2 维度与人物 top2 维度重合时加分
+    var bonus=0;
+    var figSorted=FIGURES[i].vec.map(function(v,j){return{v:v,j:j}}).sort(function(a,b){return b.v-a.v});
+    var figTop2=[figSorted[0].j,figSorted[1].j];
+    if(top2[0]===figTop2[0]||top2[0]===figTop2[1]) bonus+=0.12;
+    if(top2[1]===figTop2[0]||top2[1]===figTop2[1]) bonus+=0.08;
+    s+=bonus;
     if(s>best){best=s;bestIdx=i;}
   }
   return bestIdx;

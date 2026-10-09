@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a14">
+<meta name="description" content="灵魂镜像 · 测测你最像哪个历史人物 · 15道沉浸式叙事场景题 · 12位历史人物维度画像 · 余弦相似度命运匹配 · SVG命运雷达图">
+<title>灵魂镜像 · 测测你最像哪个历史人物</title>
+<style>
+:root{
+  --bg:#0a0a14; --bg2:#12121e; --gold:#d4af37; --gold-dim:#8a7028; --amber:#c8983e;
+  --red:#8b2233; --indigo:#4a5a8a; --text:#e8e2d0; --text-dim:#8a8478; --card:#181828;
+  --accent:#d4af37; --accent-dim:#8a7028; --accent-glow:rgba(212,175,55,0.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'Georgia','Noto Serif SC','Songti SC','SimSun',serif;line-height:1.7;overflow-x:hidden;min-height:100vh}
+.hidden{display:none!important}
+#stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.screen{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 16px}
+/* Cover */
+#cover{justify-content:center;text-align:center}
+.cover-title{font-size:2.6rem;font-weight:bold;color:var(--gold);letter-spacing:0.15em;margin-bottom:8px;text-shadow:0 0 30px rgba(212,175,55,0.4)}
+.cover-sub{font-size:1rem;color:var(--text-dim);margin-bottom:40px;letter-spacing:0.1em}
+.typewriter{min-height:120px;font-size:0.95rem;color:var(--text);max-width:380px;margin:0 auto 40px;text-align:left;line-height:2;opacity:0;transition:opacity 0.3s}
+.typewriter.show{opacity:1}
+.cursor{color:var(--gold);animation:blink 0.8s infinite}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.btn{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:14px 36px;font-size:1.05rem;font-family:inherit;letter-spacing:0.1em;cursor:pointer;border-radius:2px;transition:all 0.3s;font-weight:bold}
+.btn:hover,.btn:active{background:var(--accent);color:var(--bg);box-shadow:0 0 20px var(--accent-glow)}
+.btn-secondary{border-color:var(--text-dim);color:var(--text-dim)}
+.btn-secondary:hover,.btn-secondary:active{background:var(--text-dim);color:var(--bg)}
+.start-btn{opacity:0;transition:opacity 0.5s}
+.start-btn.show{opacity:1}
+/* Quiz */
+#quiz{display:none}
+.progress-wrap{width:100%;max-width:460px;margin-bottom:32px}
+.progress-bar{height:3px;background:var(--bg2);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));width:0;transition:width 0.4s ease;border-radius:2px}
+.progress-text{font-size:0.75rem;color:var(--text-dim);text-align:center;margin-top:8px;letter-spacing:0.1em}
+.q-icon{font-size:2.2rem;margin-bottom:12px;text-align:center;filter:grayscale(0.2) opacity(0.9)}
+.q-intro{font-style:italic;color:var(--text-dim);font-size:0.88rem;text-align:center;max-width:420px;margin:0 auto 28px;line-height:2;padding:0 12px}
+.options{width:100%;max-width:460px;display:flex;flex-direction:column;gap:12px}
+.option{background:var(--card);border:1px solid #2a2a3e;color:var(--text);padding:18px 20px;font-family:inherit;font-size:0.92rem;line-height:1.8;cursor:pointer;border-radius:4px;transition:all 0.25s;text-align:left;position:relative;overflow:hidden}
+.option::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:var(--accent);transform:scaleY(0);transform-origin:top;transition:transform 0.25s}
+.option:hover,.option:active{border-color:var(--accent);background:#1e1e32}
+.option:hover::before,.option:active::before{transform:scaleY(1)}
+.option.selected{border-color:var(--accent);background:#1e1e32;box-shadow:0 0 15px var(--accent-glow)}
+.option.selected::before{transform:scaleY(1)}
+.q-transition{animation:qFadeIn 0.4s ease}
+@keyframes qFadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+/* Loading */
+#loading{display:none;justify-content:center}
+.load-symbol{width:80px;height:80px;margin-bottom:24px;position:relative}
+.load-ring{position:absolute;width:100%;height:100%;border:2px solid transparent;border-top-color:var(--accent);border-radius:50%;animation:spin 1.2s linear infinite}
+.load-ring:nth-child(2){border-top-color:transparent;border-bottom-color:var(--accent-dim);animation-duration:1.8s;animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-text{color:var(--accent);font-size:1.1rem;letter-spacing:0.2em;text-align:center;animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
+/* Result */
+#result{display:none}
+.result-name{font-size:3rem;font-weight:bold;color:var(--accent);text-align:center;letter-spacing:0.1em;margin-bottom:4px;animation:nameZoom 0.8s ease;text-shadow:0 0 30px var(--accent-glow)}
+@keyframes nameZoom{from{opacity:0;transform:scale(0.5);letter-spacing:0.5em}to{opacity:1;transform:scale(1);letter-spacing:0.1em}}
+.result-title-sub{color:var(--text-dim);font-size:0.85rem;text-align:center;letter-spacing:0.15em;margin-bottom:8px;opacity:0;animation:fadeIn 0.6s ease 0.4s forwards}
+.result-tagline{font-size:1.1rem;color:var(--text);text-align:center;margin-bottom:32px;font-style:italic;opacity:0;animation:fadeIn 0.6s ease 0.6s forwards;max-width:400px}
+@keyframes fadeIn{to{opacity:1}}
+.radar-wrap{display:flex;justify-content:center;margin-bottom:32px;opacity:0;animation:fadeIn 0.8s ease 0.8s forwards}
+.radar-svg{max-width:320px;width:100%;height:auto}
+.radar-grid{fill:none;stroke:#2a2a3e;stroke-width:1}
+.radar-axis{stroke:#2a2a3e;stroke-width:1}
+.radar-user{fill:var(--accent);fill-opacity:0.15;stroke:var(--accent);stroke-width:2;stroke-linejoin:round}
+.radar-char{fill:none;stroke:var(--text-dim);stroke-width:1.5;stroke-dasharray:4 3;stroke-linejoin:round}
+.radar-label{fill:var(--text-dim);font-size:11px;text-anchor:middle;dominant-baseline:middle}
+.radar-dot-user{fill:var(--accent)}
+.radar-dot-char{fill:var(--text-dim)}
+.compare{width:100%;max-width:460px;margin-bottom:32px;opacity:0;animation:fadeIn 0.8s ease 1.2s forwards}
+.compare-title{font-size:0.9rem;color:var(--accent);letter-spacing:0.1em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--bg2)}
+.compare-list{list-style:none;font-size:0.88rem;line-height:2;color:var(--text)}
+.compare-list li{padding-left:18px;position:relative}
+.compare-list li::before{content:'';position:absolute;left:0;top:50%;width:6px;height:6px;border-radius:50%;background:var(--accent);transform:translateY(-50%)}
+.compare-diff .compare-list li::before{background:var(--text-dim)}
+.timeline{width:100%;max-width:460px;margin-bottom:32px;opacity:0;animation:fadeIn 0.8s ease 1.4s forwards}
+.timeline-title{font-size:0.9rem;color:var(--accent);letter-spacing:0.1em;margin-bottom:16px;padding-bottom:6px;border-bottom:1px solid var(--bg2)}
+.timeline-item{display:flex;gap:14px;margin-bottom:20px}
+.timeline-marker{flex-shrink:0;width:12px;height:12px;border-radius:50%;border:2px solid var(--accent);background:var(--bg);margin-top:4px;box-shadow:0 0 8px var(--accent-glow)}
+.timeline-body{font-size:0.85rem;line-height:1.9}
+.timeline-event{color:var(--accent);font-weight:bold;margin-bottom:2px;font-size:0.82rem}
+.share-box{width:100%;max-width:460px;background:var(--card);border:1px solid #2a2a3e;border-radius:4px;padding:16px;margin-bottom:24px;opacity:0;animation:fadeIn 0.8s ease 1.6s forwards}
+.share-text{font-size:0.85rem;color:var(--text);line-height:1.8;margin-bottom:12px}
+.share-btn{background:transparent;border:1px solid var(--accent-dim);color:var(--accent);padding:8px 20px;font-size:0.82rem;font-family:inherit;cursor:pointer;border-radius:2px;transition:all 0.2s;letter-spacing:0.05em}
+.share-btn:hover,.share-btn:active{background:var(--accent-dim);color:var(--bg)}
+.result-btns{display:flex;gap:12px;opacity:0;animation:fadeIn 0.8s ease 1.8s forwards;flex-wrap:wrap;justify-content:center}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--bg);padding:10px 24px;border-radius:4px;font-size:0.85rem;z-index:1000;opacity:0;transition:opacity 0.3s;pointer-events:none}
+.toast.show{opacity:1}
+.browse-list{width:100%;max-width:460px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.browse-chip{background:var(--card);border:1px solid #2a2a3e;color:var(--text-dim);padding:6px 14px;font-size:0.78rem;font-family:inherit;cursor:pointer;border-radius:2px;transition:all 0.2s}
+.browse-chip:hover,.browse-chip:active{border-color:var(--accent);color:var(--accent)}
+.browse-back{margin-top:20px}
+@media(min-width:520px){.cover-title{font-size:3.2rem}.result-name{font-size:3.6rem}.q-intro{font-size:0.95rem}.option{font-size:1rem}}
+</style>
+</head>
+<body>
+<svg id="stars" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="sg" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<div id="cover" class="screen">
+  <h1 class="cover-title">灵魂镜像</h1>
+  <div class="cover-sub">测测你最像哪个历史人物</div>
+  <div class="typewriter" id="typewriter"></div>
+  <button class="btn start-btn" id="startBtn" onclick="startQuiz()">开始测试</button>
+</div>
+
+<div id="quiz" class="screen">
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText"></div>
+  </div>
+  <div id="quizContent" class="q-transition"></div>
+</div>
+
+<div id="loading" class="screen">
+  <div class="load-symbol"><div class="load-ring"></div><div class="load-ring"></div></div>
+  <div class="load-text">命运推演中…</div>
+</div>
+
+<div id="result" class="screen">
+  <div id="resultContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// === 维度定义 ===
+var DIMS = ['权力欲','理性度','孤独感','变革性','情感深度'];
+
+// === 12位历史人物画像 ===
+// 维度顺序: [权力欲, 理性度, 孤独感, 变革性, 情感深度]
+var FIGURES = [
+  {name:'李白',title:'浪漫诗仙',tagline:'醉眼看人间，诗剑舞天涯',
+   vec:[-2,-2,1,1,2],color:'#4a6fa5',accentName:'靛蓝',
+   timeline:[
+     {event:'少年出蜀',text:'仗剑去国，辞亲远游，一叶扁舟沿长江而下。从此天下有了李太白。'},
+     {event:'长安醉卧',text:'天子呼来不上船，自称臣是酒中仙。贺知章见他，惊呼"谪仙人"。'},
+     {event:'轻舟已过',text:'流放夜郎途中遇赦。他写下"轻舟已过万重山"——那个出蜀少年终于回来了。'}
+   ]},
+  {name:'武则天',title:'千古女帝',tagline:'日月凌空，万物臣服',
+   vec:[2,2,2,2,-1],color:'#a02040',accentName:'深红',
+   timeline:[
+     {event:'入宫为才人',text:'十四岁入太宗后宫，被赐号"武媚"。驯狮子骢的故事里，已见帝王心性。'},
+     {event:'改唐为周',text:'六十七岁称帝，改国号为周。以一介女身坐上龙椅，前无古人。'},
+     {event:'无字之碑',text:'临终去帝号，以皇后身份入葬乾陵。立无字碑，功过留给后人评说。'}
+   ]},
+  {name:'达芬奇',title:'全能天才',tagline:'万物皆可解，唯有好奇不息',
+   vec:[0,2,1,1,1],color:'#c8983e',accentName:'琥珀',
+   timeline:[
+     {event:'画室学艺',text:'少年入韦罗基奥画室。他画的天使比师父还好，师父从此搁笔。'},
+     {event:'米兰十七年',text:'给米兰公爵写信求职——"我能造桥、造炮、造城防"。在米兰画下《最后的晚餐》。'},
+     {event:'手稿如海',text:'留下六千页手稿，从飞行器到人体解剖，每一个领域都走到了人类智力的尽头。'}
+   ]},
+  {name:'苏格拉底',title:'诘问哲人',tagline:'唯有审视过的人生值得过',
+   vec:[-1,2,1,1,0],color:'#d4af37',accentName:'金色',
+   timeline:[
+     {event:'德尔斐神谕',text:'神说他是雅典最聪明的人。他困惑，于是开始一一走访"智者"，发现他们自以为知。'},
+     {event:'街头诘问',text:'在雅典街头追问每一个行人，用不断追问击碎所有人的虚假认知。'},
+     {event:'饮鸩而死',text:'被判"腐蚀青年"之罪。拒绝逃跑，平静饮下毒堇汁，用死亡完成了最后一课。'}
+   ]},
+  {name:'尼采',title:'超人先知',tagline:'那些没杀死我的，使我更强',
+   vec:[1,2,2,2,2],color:'#7a3a8a',accentName:'深紫',
+   timeline:[
+     {event:'墓园少年',text:'父亲早逝，少年在墓园和音乐中度过。十岁开始写诗，内心已有一个深渊。'},
+     {event:'都灵崩溃',text:'在都灵街头看到马被鞭打，抱住马痛哭。从此精神崩溃，余生十一年在黑暗中度过。'},
+     {event:'超人宣言',text:'写下"上帝已死"与超人哲学。生前无人理解，死后照亮了整个二十世纪。'}
+   ]},
+  {name:'克利奥帕特拉',title:'尼罗河蛇后',tagline:'以美为刃，以智为盾',
+   vec:[2,1,1,1,2],color:'#b8860b',accentName:'金红',
+   timeline:[
+     {event:'卷毯见凯撒',text:'被弟弟逐出埃及，她把自己卷在地毯里送到凯撒面前——一场赌命的自我推销。'},
+     {event:'与安东尼',text:'凯撒死后她选择了安东尼。两人的联盟几乎重塑了整个地中海的版图。'},
+     {event:'毒蛇之吻',text:'亚克兴海战败后，她选择用毒蛇结束自己。埃及从此成为罗马的一个行省。'}
+   ]},
+  {name:'成吉思汗',title:'草原之王',tagline:'最大的快乐，在于征服敌人',
+   vec:[2,1,-1,1,-2],color:'#3a6a4a',accentName:'暗绿',
+   timeline:[
+     {event:'少年劫难',text:'父亲被毒死，部落抛弃了孤儿寡母。少年在草原上挖草根活下来，学到只有强者才能生存。'},
+     {event:'统一蒙古',text:'用二十年时间，将散落的草原部落一一收入麾下，被推为"成吉思汗"。'},
+     {event:'西征花剌子模',text:'使者被杀，他率军西征，一路摧毁城池。蒙古铁骑踏出了横跨欧亚的帝国。'}
+   ]},
+  {name:'曹操',title:'乱世枭雄',tagline:'宁我负人，毋人负我',
+   vec:[2,2,1,1,0],color:'#8b7515',accentName:'暗金',
+   timeline:[
+     {event:'刺董未遂',text:'年轻时任侠放荡，曾持刀刺董卓，失败后逃亡。刺杀虽败，但天下皆知此名。'},
+     {event:'挟天子令诸侯',text:'迎汉献帝于许昌，"奉天子以令不臣"，从此以中央之名行霸主之实。'},
+     {event:'赤壁之败',text:'南下统一，却在赤壁遇周瑜一把火。统一大业功亏一篑，但北方基业已稳。'}
+   ]},
+  {name:'诸葛亮',title:'卧龙先生',tagline:'鞠躬尽瘁，死而后已',
+   vec:[1,2,2,-1,1],color:'#3a8068',accentName:'翠青',
+   timeline:[
+     {event:'躬耕南阳',text:'隐居隆中，自比管仲乐毅。种田读书观天下，等一个值得出山的人。'},
+     {event:'隆中对策',text:'刘备三顾茅庐，他一张地图三分天下。从布衣到帝师，只因遇对了人。'},
+     {event:'星落五丈原',text:'六出祁山北伐，最终病逝五丈原。鞠躬尽瘁死而后已，兑现了白帝城的承诺。'}
+   ]},
+  {name:'拿破仑',title:'科西嘉之鹰',tagline:'我命由我，不由天',
+   vec:[2,2,1,2,1],color:'#2b4a8a',accentName:'深蓝金',
+   timeline:[
+     {event:'土伦初战',text:'二十四岁，在土伦港一战成名。炮兵上尉一战升为准将，科西嘉穷小子登上历史舞台。'},
+     {event:'加冕称帝',text:'从教皇手中夺过皇冠，自己戴在头上。法兰西皇帝不是神授，是自取。'},
+     {event:'滑铁卢',text:'百日王朝最后一天，滑铁卢的炮火终结了一切。被流放圣赫勒拿，在孤岛上写完回忆录。'}
+   ]},
+  {name:'凯撒',title:'永恒之名',tagline:'我来，我见，我征服',
+   vec:[2,1,-1,2,1],color:'#7a4a8b',accentName:'紫金',
+   timeline:[
+     {event:'海盗之约',text:'年轻时被海盗绑架，他笑着说"你们要的赎金太少了，将来我要处死你们"。他做到了。'},
+     {event:'越过卢比孔河',text:'"骰子已掷出"，带兵渡河，罗马内战爆发。他破了罗马最古老的禁忌。'},
+     {event:'元老院之死',text:'被布鲁图斯等人刺杀于元老院。身中二十三刀，倒在庞培雕像脚下。他的名字成了"皇帝"的代名词。'}
+   ]},
+  {name:'圣女贞德',title:'烈焰圣女',tagline:'上帝之声指引我的剑',
+   vec:[0,-2,2,2,2],color:'#a04050',accentName:'银白红',
+   timeline:[
+     {event:'听见声音',text:'十三岁的农家少女，在田野里听到"圣人的声音"，告诉她要去拯救法兰西。'},
+     {event:'解围奥尔良',text:'剪短发、穿甲胄，率军解奥尔良之围。十七岁少女扭转了百年战争的局势。'},
+     {event:'火刑柱上',text:'被勃艮第人俘获交给英国人。十九岁在鲁昂被绑上火刑柱。临终喊出的最后一个名字是"耶稣"。'}
+   ]}
+];
+// === 15道叙事场景题 ===
+// scores: {0:权力欲, 1:理性度, 2:孤独感, 3:变革性, 4:情感深度}
+var QUESTIONS = [
+  {icon:'🏰',intro:'你站在一座千年古城门前，城门为你敞开。城中有万人跪迎，也有暗处的刀光。你的第一个念头是——',
+   options:[
+     {text:'先派出斥候探查每条街巷的虚实，确认无伏兵后才迈步入城',scores:[1,2,0,0,0]},
+     {text:'解下佩剑，单骑入城——让百姓看到你没有敌意，信任比刀剑更锋利',scores:[-1,0,0,1,1]},
+     {text:'直接策马穿过正门，马蹄声就是你的宣言，不需要向任何人解释',scores:[2,-1,0,2,0]},
+     {text:'在城外搭营，派人去城里谈条件——城可以不进，但利益不能少',scores:[1,1,1,0,0]}
+   ]},
+  {icon:'🕯️',intro:'一封密信在深夜送达，写着你最信任的人可能背叛你。烛火摇曳，你盯着信纸上的字迹——',
+   options:[
+     {text:'立即召见此人，当面质问——先听他怎么说，你不喜欢猜',scores:[0,1,0,0,1]},
+     {text:'将信烧掉，不动声色，暗中布下棋局等待对方露出马脚',scores:[1,2,1,0,0]},
+     {text:'你早有预感——信任本就是奢侈品，你从未真正给过谁',scores:[0,0,2,0,-1]},
+     {text:'拍案而起——无论真假，背叛的念头本身就是罪',scores:[2,0,0,1,2]}
+   ]},
+  {icon:'🌌',intro:'你独自站在一片无边旷野中，四周没有一个人，只有风声和星空。你的感受是——',
+   options:[
+     {text:'终于清静了。这种无边无际的自由让你呼吸顺畅，天地之间只有你',scores:[0,0,2,0,0]},
+     {text:'你开始在大脑中推演某个困扰已久的问题——寂静是最好的催化剂',scores:[0,2,1,0,0]},
+     {text:'一种深沉的孤独涌上来——不是寂寞，而是意识到没有人能真正理解你',scores:[0,0,2,0,2]},
+     {text:'你想找人说话。这片旷野太大了，大到让人心慌',scores:[0,0,-2,0,1]}
+   ]},
+  {icon:'⚖️',intro:'你面前摆着一卷传了三百年的律法，族中长老说"祖制不可变"。但你知道其中三条已经不合时宜——',
+   options:[
+     {text:'直接撕掉那三条。改革的代价总得有人来付，你来做这个恶人',scores:[2,-1,0,2,0]},
+     {text:'逐条列出改革利弊写成谏书，用道理说服所有人——刀不如笔',scores:[0,2,0,1,0]},
+     {text:'你对律法本身没兴趣，但"打破旧物"这件事让你兴奋',scores:[0,0,0,2,1]},
+     {text:'保留旧法外壳，在缝隙中填入新内容——温水煮青蛙最高明',scores:[1,2,0,-1,0]}
+   ]},
+  {icon:'🌙',intro:'满月之夜，你独自饮酒。酒入愁肠，你最想做的事是——',
+   options:[
+     {text:'提笔写诗，把此刻的月光和心事都封进字句里',scores:[0,0,1,0,2]},
+     {text:'在脑中复盘最近的每一步棋——酒只是让思维更锋利',scores:[0,2,0,0,0]},
+     {text:'想起某个再也见不到的人，一杯接一杯，直到月光模糊',scores:[0,0,2,0,2]},
+     {text:'你从不独饮——酒是用来在宴席上收买人心的',scores:[1,0,-1,0,-1]}
+   ]},
+  {icon:'⚔️',intro:'两军对峙，你手中只有三千人，对面是三万。诸将面色苍白，等你下令——',
+   options:[
+     {text:'不必硬碰。声东击西、断其粮道，让三万人自己溃散',scores:[1,2,0,0,0]},
+     {text:'全军压上，你在最前面——胜利属于敢死之人',scores:[2,-1,0,2,1]},
+     {text:'你相信天命在你这一边，等一个征兆再动',scores:[0,-1,0,1,1]},
+     {text:'先守。等对方露出破绽——你从不急，因为急的人先死',scores:[0,2,1,0,0]}
+   ]},
+  {icon:'📜',intro:'如果你必须教导一个未来的君王，你会把最重要的课放在——',
+   options:[
+     {text:'"学会怀疑一切，包括你自己。真理不在任何人的嘴里"',scores:[0,2,1,0,0]},
+     {text:'"权力是为用而生，不是为藏——该出手时绝不犹豫"',scores:[2,0,0,1,0]},
+     {text:'"感受百姓的苦，你才能成为他们的剑"',scores:[0,0,0,0,2]},
+     {text:'"旧世界需要打碎，你要做那个握锤子的人"',scores:[2,0,0,2,0]}
+   ]},
+  {icon:'🪞',intro:'你对镜端详自己，那张脸背后——你最怕看到什么？',
+   options:[
+     {text:'平庸。如果你只是众生中普通一个，那一切都没有意义',scores:[1,0,0,2,0]},
+     {text:'冷漠。你怕有一天对世间万物都失去感受力',scores:[0,0,0,0,2]},
+     {text:'被看穿。你费尽心机构筑的面具下，其实不堪一击',scores:[1,0,2,0,0]},
+     {text:'愚蠢。最大的恐惧是在关键判断上输给了自己的无知',scores:[0,2,0,0,0]}
+   ]},
+  {icon:'🎲',intro:'你必须牺牲一个最亲近的人，才能赢下整盘棋。棋盘在他面前展开——',
+   options:[
+     {text:'你落子了。胜利比任何感情都重要，事后你会记住他',scores:[2,2,0,0,-1]},
+     {text:'你掀翻了棋盘——这盘棋你可以不赢，但你不能如此活',scores:[0,0,0,2,2]},
+     {text:'你花了一整夜找第三条路——一定有一条路不必牺牲',scores:[0,2,0,0,1]},
+     {text:'你让他自己选——你给不了他答案，这个罪你担不起',scores:[0,0,1,0,2]}
+   ]},
+  {icon:'🔱',intro:'一位先知告诉你"你的名字会被记住一千年"。你的反应是——',
+   options:[
+     {text:'本该如此。你的每一步都在为此铺路',scores:[2,1,0,0,0]},
+     {text:'名字不重要，重要的是你做的事是否改变了什么',scores:[0,0,0,1,1]},
+     {text:'一千年太久，你只在乎今夜月色和杯中酒',scores:[-1,0,0,0,2]},
+     {text:'你不信预言——命运在你手中，不在任何人的嘴里',scores:[1,1,0,2,0]}
+   ]},
+  {icon:'🏴',intro:'你攻下一座城，守军投降，百姓跪伏。你的第一道命令是——',
+   options:[
+     {text:'查抄府库，登记人口，重建秩序——先让城市运转起来',scores:[1,2,0,0,0]},
+     {text:'召集全城文人武将，你亲自选出可用之才',scores:[2,0,-1,0,0]},
+     {text:'你去城中最大的酒馆，和百姓喝一顿酒——民心不在刀剑',scores:[1,0,0,0,2]},
+     {text:'拆掉城墙——让这座城从此再无"内外"之分',scores:[2,0,0,2,0]}
+   ]},
+  {icon:'🕳️',intro:'所有人都离开了，你一个人走在漫长的隧道里，前面没有光。你心里想的是——',
+   options:[
+     {text:'这条路你走过太多次了，走就是了，光会来的',scores:[0,1,2,0,0]},
+     {text:'你开始数步数、估距离、计算方向——恐惧来自未知，数据能杀死恐惧',scores:[0,2,0,0,0]},
+     {text:'你想起一些事——也许是某个人，也许是一首歌，它们在黑暗里格外清晰',scores:[0,0,2,0,2]},
+     {text:'你在黑暗里笑了一下——没有光的隧道，意味着你是唯一的光',scores:[1,0,1,2,0]}
+   ]},
+  {icon:'📖',intro:'如果人生只能选一种追求，你会选——',
+   options:[
+     {text:'穷尽世间一切学问，没有一个问题是你不愿追问的',scores:[0,2,0,1,0]},
+     {text:'走遍天下，见所有人，打所有仗——阅历就是你的书',scores:[2,0,0,0,1]},
+     {text:'写出一句让千年后的人仍会落泪的话',scores:[0,0,0,1,2]},
+     {text:'建立一套全新的秩序，让所有后来者都活在你的规则里',scores:[2,0,0,2,0]}
+   ]},
+  {icon:'🍷',intro:'如果这是你最后一顿饭，桌上坐着你最在意的人，你会——',
+   options:[
+     {text:'不说话，只是看着他们——你想记住每一张脸',scores:[0,0,1,0,2]},
+     {text:'说一个只有你们懂的笑话，让最后一刻是笑着的',scores:[-1,0,0,0,2]},
+     {text:'你安排好后事才入座——最后一顿饭也要在掌控之内',scores:[2,2,0,0,0]},
+     {text:'举杯敬天地——你这一生无憾，来去干脆',scores:[1,0,0,1,1]}
+   ]},
+  {icon:'🪦',intro:'你的墓碑上只能刻一句话。你希望那句话是——',
+   options:[
+     {text:'"此人改变了世界的形状"',scores:[2,0,0,2,0]},
+     {text:'"此人一生追问，至死未停"',scores:[0,2,1,0,0]},
+     {text:'"此人活过，爱过，痛过，不曾伪装"',scores:[0,0,0,1,2]},
+     {text:'"此人独行于世，来去如风"',scores:[0,0,2,0,1]}
+   ]}
+];
+// === 星空背景 ===
+(function(){
+  var svg=document.getElementById('stars');
+  for(var i=0;i<80;i++){
+    var x=Math.random()*100, y=Math.random()*100, r=Math.random()*1.2+0.3;
+    var o=Math.random()*0.5+0.2;
+    var c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',x+'%'); c.setAttribute('cy',y+'%'); c.setAttribute('r',r);
+    c.setAttribute('fill','#fff'); c.setAttribute('opacity',o);
+    svg.appendChild(c);
+  }
+})();
+
+// === 打字机效果 ===
+var introText='在历史的长河中，有些灵魂从未消散。\n它们藏在你的选择里，藏在你面对命运时的本能反应中。\n回答15个场景，让千年的灵魂为你照镜。\n你，最像谁？';
+var typeIdx=0;
+function typeWriter(){
+  var el=document.getElementById('typewriter');
+  el.classList.add('show');
+  function step(){
+    if(typeIdx<introText.length){
+      var ch=introText[typeIdx];
+      el.innerHTML=introText.substring(0,typeIdx+1).replace(/\n/g,'<br>')+'<span class="cursor">▌</span>';
+      typeIdx++;
+      setTimeout(step, ch==='\n'?400:60+Math.random()*40);
+    }else{
+      el.innerHTML=introText.replace(/\n/g,'<br>');
+      document.getElementById('startBtn').classList.add('show');
+    }
+  }
+  step();
+}
+setTimeout(typeWriter,500);
+
+// === 答题状态 ===
+var currentQ=0;
+var userVec=[0,0,0,0,0];
+
+function startQuiz(){
+  document.getElementById('cover').style.display='none';
+  document.getElementById('quiz').style.display='flex';
+  currentQ=0; userVec=[0,0,0,0,0];
+  showQuestion();
+}
+
+function showQuestion(){
+  var q=QUESTIONS[currentQ];
+  var el=document.getElementById('quizContent');
+  el.classList.remove('q-transition');
+  void el.offsetWidth;
+  el.classList.add('q-transition');
+  var opts='';
+  for(var i=0;i<q.options.length;i++){
+    opts+='<div class="option" onclick="selectOption('+i+')">'+q.options[i].text+'</div>';
+  }
+  el.innerHTML='<div class="q-icon">'+q.icon+'</div>'+
+    '<div class="q-intro">'+q.intro+'</div>'+
+    '<div class="options">'+opts+'</div>';
+  var pct=(currentQ/QUESTIONS.length)*100;
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressText').textContent='第 '+(currentQ+1)+' / '+QUESTIONS.length+' 题';
+}
+
+function selectOption(idx){
+  var opts=document.querySelectorAll('.option');
+  for(var i=0;i<opts.length;i++) opts[i].classList.remove('selected');
+  opts[idx].classList.add('selected');
+  var sc=QUESTIONS[currentQ].options[idx].scores;
+  for(var i=0;i<5;i++) userVec[i]+=sc[i];
+  setTimeout(function(){
+    currentQ++;
+    if(currentQ>=QUESTIONS.length){
+      document.getElementById('progressFill').style.width='100%';
+      showLoading();
+    }else{
+      showQuestion();
+    }
+  },350);
+}
+
+function showLoading(){
+  document.getElementById('quiz').style.display='none';
+  document.getElementById('loading').style.display='flex';
+  setTimeout(showResult,2200);
+}
+
+// === 余弦相似度 ===
+function cosineSim(a,b){
+  var dot=0,mA=0,mB=0;
+  for(var i=0;i<a.length;i++){dot+=a[i]*b[i];mA+=a[i]*a[i];mB+=b[i]*b[i];}
+  mA=Math.sqrt(mA); mB=Math.sqrt(mB);
+  if(mA===0||mB===0) return 0;
+  return dot/(mA*mB);
+}
+
+function computeResult(){
+  var best=-1,bestIdx=0;
+  for(var i=0;i<FIGURES.length;i++){
+    var s=cosineSim(userVec,FIGURES[i].vec);
+    if(s>best){best=s;bestIdx=i;}
+  }
+  return bestIdx;
+}
+
+// === SVG雷达图 ===
+function drawRadar(userVec,charVec){
+  var cx=150,cy=150,maxR=110;
+  var n=5,angles=[];
+  for(var i=0;i<n;i++) angles.push(-Math.PI/2+i*2*Math.PI/n);
+  var html='<svg class="radar-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">';
+  // grid
+  for(var ring=1;ring<=4;ring++){
+    var r=maxR*ring/4;
+    var pts='';
+    for(var i=0;i<n;i++){
+      var x=cx+Math.cos(angles[i])*r, y=cy+Math.sin(angles[i])*r;
+      pts+=x+','+y+' ';
+    }
+    html+='<polygon class="radar-grid" points="'+pts+'"/>';
+  }
+  // axes
+  for(var i=0;i<n;i++){
+    var x=cx+Math.cos(angles[i])*maxR, y=cy+Math.sin(angles[i])*maxR;
+    html+='<line class="radar-axis" x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'"/>';
+  }
+  // char polygon (dashed)
+  var cp='';
+  for(var i=0;i<n;i++){
+    var val=(charVec[i]+2)/4; // -2..2 -> 0..1
+    var r=maxR*val;
+    var x=cx+Math.cos(angles[i])*r, y=cy+Math.sin(angles[i])*r;
+    cp+=x+','+y+' ';
+  }
+  html+='<polygon class="radar-char" points="'+cp+'"/>';
+  // user polygon
+  var up='';
+  for(var i=0;i<n;i++){
+    var val=(userVec[i]+2)/4;
+    var r=maxR*Math.max(0,Math.min(1,val));
+    var x=cx+Math.cos(angles[i])*r, y=cy+Math.sin(angles[i])*r;
+    up+=x+','+y+' ';
+    html+='<circle class="radar-dot-user" cx="'+x+'" cy="'+y+'" r="3"/>';
+  }
+  html+='<polygon class="radar-user" points="'+up+'"/>';
+  // dots for char
+  for(var i=0;i<n;i++){
+    var val=(charVec[i]+2)/4;
+    var r=maxR*val;
+    var x=cx+Math.cos(angles[i])*r, y=cy+Math.sin(angles[i])*r;
+    html+='<circle class="radar-dot-char" cx="'+x+'" cy="'+y+'" r="2.5"/>';
+  }
+  // labels
+  var labels=['权力','理性','孤独','变革','情感'];
+  for(var i=0;i<n;i++){
+    var x=cx+Math.cos(angles[i])*(maxR+22), y=cy+Math.sin(angles[i])*(maxR+22);
+    html+='<text class="radar-label" x="'+x+'" y="'+y+'">'+labels[i]+'</text>';
+  }
+  html+='</svg>';
+  return html;
+}
+
+// === 生成相似/不同 ===
+function genCompare(uVec,cVec){
+  var sim=[],diff=[];
+  for(var i=0;i<5;i++){
+    var d=Math.abs(uVec[i]-cVec[i]);
+    if(d<=1) sim.push(DIMS[i]+'：你与'+FIGURES[currentFigure].name+'在此维度上几乎重合（'+formatVal(uVec[i])+' vs '+formatVal(cVec[i])+'）');
+    else diff.push(DIMS[i]+'：你'+formatVal(uVec[i])+'，而'+FIGURES[currentFigure].name+'是'+formatVal(cVec[i])+'——这是你们灵魂的裂缝');
+  }
+  if(sim.length===0) sim.push('你与'+FIGURES[currentFigure].name+'在每个维度都有微妙的不同，但正是这些不同拼出了命中注定的相遇');
+  if(diff.length===0) diff.push('你们几乎是一面镜子的两面，那些细微的不同恰恰证明了你的独特');
+  return{sim:sim,diff:diff};
+}
+function formatVal(v){
+  if(v>=2) return'极强'; if(v===1) return'偏高'; if(v===0) return'中性';
+  if(v===-1) return'偏低'; return'极弱';
+}
+
+var currentFigure=0;
+function showResult(){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('result').style.display='flex';
+  var idx=computeResult();
+  renderResult(idx);
+}
+function renderResult(idx){
+  currentFigure=idx;
+  var f=FIGURES[idx];
+  document.documentElement.style.setProperty('--accent',f.color);
+  // glow color
+  var glow=f.color+'4d';
+  document.documentElement.style.setProperty('--accent-glow',glow);
+  var cmp=genCompare(userVec,f.vec);
+  var radarHtml=drawRadar(userVec,f.vec);
+  var simHtml=cmp.sim.map(function(s){return'<li>'+s+'</li>'}).join('');
+  var diffHtml=cmp.diff.map(function(s){return'<li>'+s+'</li>'}).join('');
+  var tlHtml=f.timeline.map(function(t){
+    return'<div class="timeline-item"><div class="timeline-marker"></div><div class="timeline-body"><div class="timeline-event">'+t.event+'</div>'+t.text+'</div></div>';
+  }).join('');
+  var shareText='我测出来是'+f.name+'——'+f.tagline+'。你是谁？';
+  var html='<div class="result-name">'+f.name+'</div>'+
+    '<div class="result-title-sub">'+f.title+' · '+f.accentName+'</div>'+
+    '<div class="result-tagline">「'+f.tagline+'」</div>'+
+    '<div class="radar-wrap">'+radarHtml+'</div>'+
+    '<div class="compare"><div class="compare-title">你们的相似之处</div><ul class="compare-list">'+simHtml+'</ul></div>'+
+    '<div class="compare compare-diff"><div class="compare-title" style="color:var(--text-dim)">你们的不同之处</div><ul class="compare-list" style="color:var(--text-dim)">'+diffHtml+'</ul></div>'+
+    '<div class="timeline"><div class="timeline-title">命运时间线 · '+f.name+'的三个转折</div>'+tlHtml+'</div>'+
+    '<div class="share-box"><div class="share-text" id="shareText">'+shareText+'</div><button class="share-btn" onclick="copyShare()">复制分享文案</button></div>'+
+    '<div class="result-btns"><button class="btn" onclick="restart()">再测一次</button><button class="btn btn-secondary" onclick="toggleBrowse()">看看其他人物</button></div>'+
+    '<div class="browse-list hidden" id="browseList">'+genBrowseChips()+'</div>';
+  document.getElementById('resultContent').innerHTML=html;
+}
+
+function genBrowseChips(){
+  var html='';
+  for(var i=0;i<FIGURES.length;i++){
+    if(i===currentFigure) continue;
+    html+='<button class="browse-chip" onclick="browseFigure('+i+')">'+FIGURES[i].name+'</button>';
+  }
+  return html;
+}
+function toggleBrowse(){
+  var el=document.getElementById('browseList');
+  el.classList.toggle('hidden');
+}
+function browseFigure(idx){
+  var f=FIGURES[idx];
+  currentFigure=idx;
+  document.documentElement.style.setProperty('--accent',f.color);
+  document.documentElement.style.setProperty('--accent-glow',f.color+'4d');
+  renderResult(idx);
+}
+
+function copyShare(){
+  var text=document.getElementById('shareText').textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){showToast('已复制到剪贴板')}).catch(function(){fallbackCopy(text)});
+  }else{fallbackCopy(text);}
+}
+function fallbackCopy(text){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{document.execCommand('copy');showToast('已复制到剪贴板')}catch(e){showToast('复制失败，请手动复制')}
+  document.body.removeChild(ta);
+}
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show')},2000);
+}
+function restart(){
+  currentQ=0; userVec=[0,0,0,0,0];
+  document.documentElement.style.setProperty('--accent','#d4af37');
+  document.documentElement.style.setProperty('--accent-glow','rgba(212,175,55,0.3)');
+  document.getElementById('result').style.display='none';
+  document.getElementById('cover').style.display='flex';
+  typeIdx=0;
+  typeWriter();
+}
+</script>
+</body>
+</html>
